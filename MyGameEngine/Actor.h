@@ -1,3 +1,4 @@
+#pragma once
 #include "Math.h"
 #include <vector>
 
@@ -9,6 +10,7 @@ public:
 		EPaused,
 		EDead
 	};
+
 	// 생성자/소멸자
 	Actor(class Game* game);
 	virtual ~Actor();
@@ -21,6 +23,17 @@ public:
 	virtual void UpdateActor(float deltaTime);
 
 	// Getter/Setter
+	const Vector2& GetPosition() const { return mPosition; }
+	void SetPosition(const Vector2& pos) { mPosition = pos; }
+	float GetScale() const { return mScale; }
+	void SetScale(float scale) { mScale = scale; }
+	float GetRotation() const { return mRotation; }
+	void SetRotation(float rotation) { mRotation = rotation; }
+
+	State GetState() const { return mState; }
+	void SetState(State state) { mState = state; }
+
+	class Game* GetGame() { return mGame; }
 
 	// 컴포넌트 추가/제거
 	void AddComponent(class Component* component);
