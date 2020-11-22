@@ -2,7 +2,7 @@
 #include "Actor.h"
 #include "SpriteComponent.h"
 #include "BGSpriteComponent.h"
-
+#include "TileMapComponent.h"
 #include <algorithm>
 #include <SDL_image.h>
 
@@ -148,28 +148,14 @@ void Game::GenerateOutput() {
 }
 
 void Game::LoadData() {
+	Actor* tileMapActor = new Actor(this);
+	tileMapActor->SetScale(50.0f);
+	tileMapActor->SetPosition(Vector2(100.0f, 384.0f));
 
-	// 배경용 액터
-	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(512.0f, 384.0f));
+	TileMapComponent* tmc = new TileMapComponent(tileMapActor);
 
-	BGSpriteComponent* bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgtexs = {
-		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
-	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-100.0f);
-
-	bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgtexs = {
-		GetTexture("Assets/Stars.png"),
-		GetTexture("Assets/Stars.png")
-	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-200.0f);
+	SDL_Texture* tileTex = GetTexture("Assets/Tiles.png");
+	tmc->SetTexture(tileTex);
 }
 
 void Game::UnloadData() {
