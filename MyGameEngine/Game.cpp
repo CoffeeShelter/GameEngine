@@ -149,14 +149,27 @@ void Game::GenerateOutput() {
 
 void Game::LoadData() {
 	Actor* tileMapActor = new Actor(this);
-	tileMapActor->SetScale(50.0f);
+	tileMapActor->SetScale(32.5f);
 	tileMapActor->SetPosition(Vector2(100.0f, 384.0f));
 
 	TileMapComponent* tmc = new TileMapComponent(tileMapActor);
 
 	SDL_Texture* tileTex = GetTexture("Assets/Tiles.png");
 	tmc->SetTexture(tileTex);
+	tmc->LoadCSV("Assets/MapLayer3.csv");
+
+	tmc = new TileMapComponent(tileMapActor);
+	tmc->SetTexture(tileTex);
+	tmc->LoadCSV("Assets/MapLayer2.csv");
+
+	tmc = new TileMapComponent(tileMapActor);
+	tmc->SetTexture(tileTex);
+	tmc->LoadCSV("Assets/MapLayer1.csv");
 }
+
+//LoadCSV("Assets/MapLayer1.csv");
+	//LoadCSV("Assets/MapLayer2.csv");
+	//LoadCSV("Assets/MapLayer3.csv");
 
 void Game::UnloadData() {
 	while (!mActors.empty()) {

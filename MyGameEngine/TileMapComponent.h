@@ -1,5 +1,6 @@
 #include "SpriteComponent.h"
 #include <string>
+#include <vector>
 
 class TileMapComponent : public SpriteComponent {
 public:
@@ -9,9 +10,11 @@ public:
 	void Draw(SDL_Renderer* renderer);
 	void SetTexture(SDL_Texture* texture);
 
-	void LoadCSV(const std::string& fileName);
+	void LoadCSV(const std::string& fileNamej);
 private:
 	SDL_Texture* mTexture;
 	int mTexWidth;
 	int mTexHeight;
+
+	std::vector<std::vector<std::vector<int>>> maps;
 };
