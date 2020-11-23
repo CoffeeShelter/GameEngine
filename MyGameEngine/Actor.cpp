@@ -29,6 +29,21 @@ void Actor::Update(float deltaTime) {
 	}
 }
 
+// Game에서 호출하는 ProcessInput 함수 (재정의 되지 않음)
+void Actor::ProcessInput(const uint8_t* keyState) {
+	if (mState == EActive) {
+		for (auto comp : mComponents) {
+			comp->ProcessInput(keyState);
+		}
+		ActorInput(keyState);
+	}
+}
+
+// 특정 액터를 위한 입력 코드 (재정의 됨)
+void Actor::ActorInput(const uint8_t* keyState) {
+
+}
+
 // 액터에 부착된 모든 컴포넌트를 업데이트 (가상 함수 아님)
 void Actor::UpdateComponents(float deltaTime) {
 	for (auto comp : mComponents) {

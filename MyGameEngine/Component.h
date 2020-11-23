@@ -1,4 +1,5 @@
 #pragma once
+#include <cstdint>
 
 class Component {
 public:
@@ -10,6 +11,8 @@ public:
 	// 델타 시간으로 이 컴포넌트를 업데이트
 	virtual void Update(float deltaTime);
 	int GetUpdateOrder() const { return mUpdateOrder; }
+
+	virtual void ProcessInput(const uint8_t* keyState) {}
 
 protected:
 	// 소유자 액터

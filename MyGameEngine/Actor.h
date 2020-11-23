@@ -22,6 +22,11 @@ public:
 	// 특정 액터에 특화된 업데이트 코드 (오버라이딩 가능)
 	virtual void UpdateActor(float deltaTime);
 
+	// Game이 호출하는 ProcessInput 함수 (재정의 되지 않음)
+	void ProcessInput(const uint8_t* keyState);
+	// 특정 액터를 위한 입력 코드 (재정의됨)
+	virtual void ActorInput(const uint8_t* keyState);
+
 	// Getter/Setter
 	const Vector2& GetPosition() const { return mPosition; }
 	void SetPosition(const Vector2& pos) { mPosition = pos; }

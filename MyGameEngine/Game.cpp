@@ -88,11 +88,17 @@ void Game::ProcessInput() {
 	}
 
 	// 키보드의 상태 얻기
-	const Uint8* state = SDL_GetKeyboardState(NULL);
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
 	// 이스케이프 키를 눌렀다면 루프 종료
-	if (state[SDL_SCANCODE_ESCAPE]) {
+	if (keyState[SDL_SCANCODE_ESCAPE]) {
 		mIsRunning = false;
 	}
+
+	mUpdatingActors = true;
+	for (auto actor : mActors) {
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame() {
@@ -152,19 +158,19 @@ void Game::LoadData() {
 	tileMapActor->SetScale(32.5f);
 	tileMapActor->SetPosition(Vector2(100.0f, 384.0f));
 
-	TileMapComponent* tmc = new TileMapComponent(tileMapActor);
+	TileMapComponent* tmc = new TileMapComponent(tileMapActor,300);
 
 	SDL_Texture* tileTex = GetTexture("Assets/Tiles.png");
 	tmc->SetTexture(tileTex);
-	tmc->LoadCSV("Assets/MapLayer3.csv");
+	tmc->LoadCSV("Assets/MapLayer1.csv");
 
-	tmc = new TileMapComponent(tileMapActor);
+	tmc = new TileMapComponent(tileMapActor,200);
 	tmc->SetTexture(tileTex);
 	tmc->LoadCSV("Assets/MapLayer2.csv");
 
-	tmc = new TileMapComponent(tileMapActor);
+	tmc = new TileMapComponent(tileMapActor,100);
 	tmc->SetTexture(tileTex);
-	tmc->LoadCSV("Assets/MapLayer1.csv");
+	tmc->LoadCSV("Assets/MapLayer3.csv");
 }
 
 //LoadCSV("Assets/MapLayer1.csv");

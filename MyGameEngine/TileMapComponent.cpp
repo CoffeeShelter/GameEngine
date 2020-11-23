@@ -9,7 +9,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
 TileMapComponent::TileMapComponent(Actor* owner, int drawOrder)
-	:SpriteComponent(owner)
+	:SpriteComponent(owner,drawOrder)
 	, mTexture(nullptr)
 	, mTexHeight(0)
 	, mTexWidth(0)
