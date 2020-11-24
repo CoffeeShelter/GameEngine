@@ -1,3 +1,4 @@
+#pragma once
 #include "MoveComponent.h"
 #include <cstdint>
 
@@ -17,12 +18,12 @@ public:
 	int GetCounterClockwiseKey() const { return mCounterClockwiseKey; }
 
 	//setter
-	float SetMaxForwardSpeed(float speed) {  mMaxForwardSpeed = speed; }
-	float SetMaxAngularSpeed(float speed) {  mMaxAngularSpeed = speed; }
-	int SetForwardKey(int key) {  mForwardKey = key; }
-	int SetBackKey(int key) {  mBackKey = key; }
-	int SetClockwiseKey(int key) {  mClockwiseKey = key; }
-	int SetCounterClockwiseKey(int key) {  mCounterClockwiseKey = key; }
+	void SetMaxForwardSpeed(float speed) {  mMaxForwardSpeed = speed; }
+	void SetMaxAngularSpeed(float speed) {  mMaxAngularSpeed = speed; }
+	void SetForwardKey(int key) {  mForwardKey = key; }
+	void SetBackKey(int key) {  mBackKey = key; }
+	void SetClockwiseKey(int key) {  mClockwiseKey = key; }
+	void SetCounterClockwiseKey(int key) {  mCounterClockwiseKey = key; }
 private:
 	// 최대 전방 속도/최대 각 속도
 	float mMaxForwardSpeed;

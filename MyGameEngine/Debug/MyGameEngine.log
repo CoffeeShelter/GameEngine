@@ -1,10 +1,2 @@
-﻿  Actor.cpp
-  BGSpriteComponent.cpp
-  Component.cpp
-  Game.cpp
-  InputComponent.cpp
-  MoveComponent.cpp
-  SpriteComponent.cpp
-  TileMapComponent.cpp
-  코드를 생성하고 있습니다...
-  MyGameEngine.vcxproj -> C:\MyCprogram\MyGameEngine\Debug\MyGameEngine.exe
+﻿  Game.cpp
+  MyGameEngine.vcxproj -> C:\MyCprogram\myGameEngine\Debug\MyGameEngine.exe

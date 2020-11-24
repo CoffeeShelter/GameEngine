@@ -14,6 +14,7 @@ void MoveComponent::Update(float deltaTime) {
 		rot += mAngularSpeed * deltaTime;
 		mOwner->SetRotation(rot);
 	}
+
 	if (!Math::NearZero(mForwardSpeed)) {
 		Vector2 pos = mOwner->GetPosition();
 		pos += mOwner->GetPosition() * mForwardSpeed * deltaTime;

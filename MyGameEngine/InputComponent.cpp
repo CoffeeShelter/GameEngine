@@ -3,6 +3,12 @@
 
 InputComponent::InputComponent(Actor* owner)
 	:MoveComponent(owner)
+	,mMaxAngularSpeed(0.0f)
+	,mMaxForwardSpeed(0.0f)
+	,mClockwiseKey(0)
+	,mCounterClockwiseKey(0)
+	,mForwardKey(0)
+	,mBackKey(0)
 {}
 
 void InputComponent::ProcessInput(const uint8_t* keyState) {

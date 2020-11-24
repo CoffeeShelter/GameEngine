@@ -3,6 +3,8 @@
 #include "SpriteComponent.h"
 #include "BGSpriteComponent.h"
 #include "TileMapComponent.h"
+#include "Ship.h"
+
 #include <algorithm>
 #include <SDL_image.h>
 
@@ -109,11 +111,11 @@ void Game::UpdateGame() {
 	// (차를 초 단위로 변환)
 	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.0f;
 	// 다음 프레임을 위해 틱값을 갱신
-	mTicksCount = SDL_GetTicks();
-
+	
 	if (deltaTime > 0.05f) {
 		deltaTime = 0.05f;
 	}
+	mTicksCount = SDL_GetTicks();
 
 	// 모든 액터를 갱신
 	mUpdatingActors = true;
@@ -143,7 +145,7 @@ void Game::UpdateGame() {
 }
 
 void Game::GenerateOutput() {
-	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
+	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
 	SDL_RenderClear(mRenderer);
 
 	// 모든 스프라이트 컴포넌트를 그린다.
@@ -154,28 +156,10 @@ void Game::GenerateOutput() {
 }
 
 void Game::LoadData() {
-	Actor* tileMapActor = new Actor(this);
-	tileMapActor->SetScale(32.5f);
-	tileMapActor->SetPosition(Vector2(100.0f, 384.0f));
-
-	TileMapComponent* tmc = new TileMapComponent(tileMapActor,300);
-
-	SDL_Texture* tileTex = GetTexture("Assets/Tiles.png");
-	tmc->SetTexture(tileTex);
-	tmc->LoadCSV("Assets/MapLayer1.csv");
-
-	tmc = new TileMapComponent(tileMapActor,200);
-	tmc->SetTexture(tileTex);
-	tmc->LoadCSV("Assets/MapLayer2.csv");
-
-	tmc = new TileMapComponent(tileMapActor,100);
-	tmc->SetTexture(tileTex);
-	tmc->LoadCSV("Assets/MapLayer3.csv");
+	Ship* player = new Ship(this);
+	player->SetPosition(Vector2(512.0f, 384.0f));
+	player->SetRotation(Math::PiOver2);
 }
-
-//LoadCSV("Assets/MapLayer1.csv");
-	//LoadCSV("Assets/MapLayer2.csv");
-	//LoadCSV("Assets/MapLayer3.csv");
 
 void Game::UnloadData() {
 	while (!mActors.empty()) {
