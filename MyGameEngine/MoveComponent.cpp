@@ -9,6 +9,7 @@ MoveComponent::MoveComponent(Actor* owner, int updateOrder)
 {}
 
 void MoveComponent::Update(float deltaTime) {
+
 	if (!Math::NearZero(mAngularSpeed)) {
 		float  rot = mOwner->GetRotation();
 		rot += mAngularSpeed * deltaTime;
@@ -17,7 +18,7 @@ void MoveComponent::Update(float deltaTime) {
 
 	if (!Math::NearZero(mForwardSpeed)) {
 		Vector2 pos = mOwner->GetPosition();
-		pos += mOwner->GetPosition() * mForwardSpeed * deltaTime;
+		pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
 
 		// 화면 밖을 벗어났을 경우 반대쪽으로 순간이동 시킨다.
 		if (pos.x < 0.0f) { pos.x = 1022.0f; }

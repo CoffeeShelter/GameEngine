@@ -50,4 +50,7 @@ private:
 
 	// Map of textures loaded
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
+
+	//
+	class Ship* mShip;	// 플레이어
 };

@@ -156,9 +156,9 @@ void Game::GenerateOutput() {
 }
 
 void Game::LoadData() {
-	Ship* player = new Ship(this);
-	player->SetPosition(Vector2(512.0f, 384.0f));
-	player->SetRotation(Math::PiOver2);
+	mShip = new Ship(this);
+	mShip->SetPosition(Vector2(512.0f, 384.0f));
+	mShip->SetRotation(Math::PiOver2);
 }
 
 void Game::UnloadData() {

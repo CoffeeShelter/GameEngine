@@ -35,6 +35,8 @@ public:
 	float GetRotation() const { return mRotation; }
 	void SetRotation(float rotation) { mRotation = rotation; }
 
+	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
+
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
 
