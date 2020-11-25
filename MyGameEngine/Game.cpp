@@ -3,7 +3,10 @@
 #include "SpriteComponent.h"
 #include "BGSpriteComponent.h"
 #include "TileMapComponent.h"
+
+// 특정 게임
 #include "Ship.h"
+#include "Asteroid.h"
 
 #include <algorithm>
 #include <SDL_image.h>
@@ -156,9 +159,16 @@ void Game::GenerateOutput() {
 }
 
 void Game::LoadData() {
+	// 플레이어
 	mShip = new Ship(this);
 	mShip->SetPosition(Vector2(512.0f, 384.0f));
 	mShip->SetRotation(Math::PiOver2);
+
+	// 운석
+	const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++) {
+		new Asteroid(this);
+	}
 }
 
 void Game::UnloadData() {
@@ -247,4 +257,20 @@ void Game::RemoveSprite(class SpriteComponent* sprite) {
 	// 주의: (위치를 바꾸면 그리기 순서가 엉킨다)
 	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
 	mSprites.erase(iter);
+}
+
+// 특정 게임
+
+// 운석 추가
+void Game::AddAsteroid(Asteroid* ast) {
+	mAsteroids.emplace_back(ast);
+}
+
+// 운석 삭제
+void Game::RemoveAsteroid(Asteroid* ast) {
+	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
+
+	if (iter != mAsteroids.end()) {
+		mAsteroids.erase(iter);
+	}
 }

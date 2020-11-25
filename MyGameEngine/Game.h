@@ -23,6 +23,11 @@ public:
 
 	SDL_Texture* GetTexture(const std::string& fileName);
 
+	// 특정 게임
+	void AddAsteroid(class Asteroid* ast);
+	void RemoveAsteroid(class Asteroid* ast);
+	std::vector<class Asteroid*>& GetAsteroids() { return mAsteroids; }
+
 private:
 	// 게임 루프를 위한 헬퍼 함수
 	void ProcessInput();
@@ -51,6 +56,7 @@ private:
 	// Map of textures loaded
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
-	//
-	class Ship* mShip;	// 플레이어
+	// 특정 게임
+	class Ship* mShip; // 플레이어
+	std::vector<class Asteroid*> mAsteroids; // 운석
 };
