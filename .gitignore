@@ -1,7 +1,10 @@
 *.db
 *.user
 *.opendb
-Debug/
+Debug/*.exe
+Debug/*.ilk
+Debug/*.pdb
+MyGameEngine/Debug/
 Release/
 .DS_Store
 *xcuserdatad*
