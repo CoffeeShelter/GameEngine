@@ -70,7 +70,7 @@ bool AStar(const WeightedGraph& g, const WeightedGraphNode* start,
 {
 	std::vector<const WeightedGraphNode*> openSet;
 
-	// 현재 노드에 시작노드를 추가한다
+	// 현재 노드에 시작노드를 추가한다	
 	// 그리고 닫힌 집합에 표시한다
 	const WeightedGraphNode* current = start;
 	outMap[current].mInClosedSet = true;
