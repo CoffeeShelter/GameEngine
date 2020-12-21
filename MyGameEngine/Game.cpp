@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "VertexArray.h"
 #include <GL/glew.h>
+#include "Texture.h"
 
 // 특정 게임
 #include "Ship.h"
@@ -206,7 +207,7 @@ void Game::GenerateOutput() {
 bool Game::LoadShaders()
 {
 	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders/Transform.vert", "Shaders/Basic.frag"))
+	if (!mSpriteShader->Load("Shaders/Basic.vert", "Shaders/Basic.frag"))
 	{
 		return false;
 	}
@@ -238,7 +239,8 @@ void Game::UnloadData() {
 	}
 
 	for (auto i : mTextures) {
-		SDL_DestroyTexture(i.second);
+		i.second->Unload();
+		delete i.second;
 	}
 	mTextures.clear();
 }
@@ -260,15 +262,24 @@ void Game::CreateSpriteVerts()
 	mSpriteVerts = new VertexArray(vertices, 4, indices, 6);
 }
 
-SDL_Texture* Game::GetTexture(const std::string& fileName) {
-	SDL_Texture* tex = nullptr;
+Texture* Game::GetTexture(const std::string& fileName) {
+	Texture* tex = nullptr;
 
 	auto iter = mTextures.find(fileName);
 	if (iter != mTextures.end()) {
 		tex = iter->second;
 	}
 	else {
-		
+		tex = new Texture();
+		if (tex->Load("fileName"))
+		{
+			mTextures.emplace(fileName, tex);
+		}
+		else
+		{
+			delete tex;
+			tex = nullptr;
+		}
 	}
 
 	return tex;

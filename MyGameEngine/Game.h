@@ -22,7 +22,7 @@ public:
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
 
-	SDL_Texture* GetTexture(const std::string& fileName);
+	class Texture* GetTexture(const std::string& fileName);
 
 	// 특정 게임
 	// ( 디펜스 )
@@ -53,7 +53,7 @@ private:
 	std::vector<class SpriteComponent*> mSprites;
 
 	// Map of textures loaded
-	std::unordered_map<std::string, SDL_Texture*> mTextures;
+	std::unordered_map<std::string, class Texture*> mTextures;
 
 	// 스프라이트 쉐이더
 	class Shader* mSpriteShader;

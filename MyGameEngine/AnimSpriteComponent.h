@@ -8,13 +8,13 @@ public:
 	// 애니메이션을 프레임마다 갱신 (Component의 Update 메소드를 오버라이드)
 	void Update(float deltaTime) override;
 	// 애니메이션에 사용되는 텍스처 설정
-	void SetAnimTextures(const std::vector<SDL_Texture*>& textures);
+	void SetAnimTextures(const std::vector<class Texture*>& textures);
 	// 애니메이션 FPS를 얻거나 설정하는 함수
 	float GetAnimFPS() const { return mAnimFPS; }
 	void SetAnimFPS(float fps) { mAnimFPS = fps; }
 private:
 	// 애니메이션에 사용되는 모든 텍스처
-	std::vector<SDL_Texture*> mAnimTextures;
+	std::vector<class Texture*> mAnimTextures;
 	// 현태 프레임
 	float mCurrFrame;
 	// 애니메이션 프레임 레이트

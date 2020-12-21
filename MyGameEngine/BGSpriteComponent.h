@@ -12,7 +12,7 @@ public:
 	void Update(float deltaTime) override;
 	void Draw(Shader* shader) override;
 	// 배경에 사용되는 텍스처 설정
-	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
+	void SetBGTextures(const std::vector<class Texture*>& textures);
 	
 	// 화면 크기를 얻거나 스크롤 속도값을 설정 및 얻는 함수
 	// Getter/Setter
@@ -22,7 +22,7 @@ public:
 private:
 	// 각 배경 이미지와 배경 이미지의 오프셋 값을 캡슐화한 구조체
 	struct BGTexture {
-		SDL_Texture* mTexture;
+		class Texture* mTexture;
 		Vector2 mOffset;
 	};
 	std::vector<BGTexture> mBGTextures;

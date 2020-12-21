@@ -2,6 +2,7 @@
 #include "Actor.h"
 #include "Game.h"
 #include "Shader.h"
+#include "Texture.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:Component(owner)
@@ -30,14 +31,17 @@ void SpriteComponent::Draw(Shader* shader) {
 		Matrix4 world = scaleMat * mOwner->GetWorldTransform();
 		// 세계 변환 행렬을 설정
 		shader->SetMatrixUniform("uWorldTransform", world);
+		// 현재 텍스처 설정
+		mTexture->SetActive();
 		// 사각형을 그린다
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 	}
 }
 
 // 텍스처 설정
-void SpriteComponent::SetTexture(SDL_Texture* texture) {
+void SpriteComponent::SetTexture(Texture* texture) {
 	mTexture = texture;
 	// 텍스처 너비/높이 설정
-	SDL_QueryTexture(texture, nullptr, nullptr, &mTexWidth, &mTexHeight);
+	mTexWidth = texture->GetWidth();
+	mTexHeight = texture->GetHeight();
 }

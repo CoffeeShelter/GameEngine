@@ -1,4 +1,5 @@
 #include "BGSpriteComponent.h"
+#include "Texture.h"
 #include "Actor.h"
 
 BGSpriteComponent::BGSpriteComponent(Actor* owner, int drawOrder)
@@ -28,7 +29,7 @@ void BGSpriteComponent::Draw(Shader* shader) {
 }
 
 // 배경에 사용되는 텍스처 설정
-void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures) {
+void BGSpriteComponent::SetBGTextures(const std::vector<Texture*>& textures) {
 	int count = 0;
 
 	for (auto tex : textures) {
