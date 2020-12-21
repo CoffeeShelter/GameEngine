@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Tile.h"
 #include "SpriteComponent.h"
 #include "Game.h"
@@ -41,7 +49,7 @@ void Tile::UpdateTexture()
 		text = "Assets/TileGreen.png";
 		break;
 	case EPath:
-		if(mSelected)
+		if (mSelected)
 			text = "Assets/TileGreySelected.png";
 		else
 			text = "Assets/TileGrey.png";
@@ -54,6 +62,5 @@ void Tile::UpdateTexture()
 			text = "Assets/TileBrown.png";
 		break;
 	}
-
 	mSprite->SetTexture(GetGame()->GetTexture(text));
 }

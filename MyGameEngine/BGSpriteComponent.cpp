@@ -20,23 +20,10 @@ void BGSpriteComponent::Update(float deltaTime) {
 	}
 }
 
-void BGSpriteComponent::Draw(SDL_Renderer* renderer) {
+void BGSpriteComponent::Draw(Shader* shader) {
 	// 각 배경을 그린다.
 	for (auto& bg : mBGTextures) {
-		SDL_Rect r;
-		// 화면 사이즈와 같음
-		r.w = static_cast<int>(mScreenSize.x);
-		r.h = static_cast<int>(mScreenSize.y);
-		// 소유자의 중앙
-		r.x = static_cast<int>(mOwner->GetPosition().x - r.w / 2 + bg.mOffset.x);
-		r.y = static_cast<int>(mOwner->GetPosition().y - r.h / 2 + bg.mOffset.y);
-
-		// 배경 그리기
-		SDL_RenderCopy(renderer,
-			bg.mTexture,
-			nullptr,
-			&r
-		);
+		
 	}
 }
 

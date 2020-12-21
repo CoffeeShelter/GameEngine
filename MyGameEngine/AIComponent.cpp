@@ -1,7 +1,7 @@
 #include "AIComponent.h"
 #include "Actor.h"
 #include "AIState.h"
-#include <SDL_log.h>
+#include <SDL/SDL_Log.h>
 
 AIComponent::AIComponent(class Actor* owner)
 	:Component(owner)

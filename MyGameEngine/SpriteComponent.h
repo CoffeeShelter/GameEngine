@@ -1,13 +1,13 @@
 #pragma once
 #include "Component.h"
-#include <SDL.h>
+#include "SDL/SDL.h"
 
 class SpriteComponent : public Component{
 public:
 	// 그리기 순서값이 낮을수록 더 뒤쪽에서 그린다.
 	SpriteComponent(class Actor* owner, int drawOrder = 100);
 	~SpriteComponent();
-	virtual void Draw(SDL_Renderer* renderer);
+	virtual void Draw(class Shader* shader);
 	virtual void SetTexture(SDL_Texture* texture);
 
 	// Getter

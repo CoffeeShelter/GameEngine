@@ -35,7 +35,10 @@ public:
 	float GetRotation() const { return mRotation; }
 	void SetRotation(float rotation) { mRotation = rotation; }
 
-	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
+	void ComputeWorldTransform();
+	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
+
+	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
 
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
@@ -49,9 +52,12 @@ private:
 	// 액터의 상태
 	State mState;
 	// 변환
+	Matrix4 mWorldTransform;
 	Vector2 mPosition;	// 액터의 중심점
 	float mScale;		// 액터의 배율 (100% 의 경우 1.0f)
 	float mRotation;	// 회전 각도 (라디안)
+	bool mRecomputeWorldTransform;
+
 	// 이 액터가 보유한 컴포넌트들
 	std::vector<class Component*> mComponents;
 	class Game* mGame;

@@ -24,8 +24,12 @@ Actor::~Actor() {
 // Game에서 호출하는 Update 함수 (가상 함수 아님)
 void Actor::Update(float deltaTime) {
 	if (mState == EActive) {
+		ComputeWorldTransform();
+
 		UpdateComponents(deltaTime);
 		UpdateActor(deltaTime);
+
+		ComputeWorldTransform();
 	}
 }
 
@@ -50,6 +54,26 @@ void Actor::UpdateComponents(float deltaTime) {
 		comp->Update(deltaTime);
 	}
 }
+
+void Actor::ComputeWorldTransform()
+{
+	if (mRecomputeWorldTransform)
+	{
+		mRecomputeWorldTransform = false;
+		// 스케일, 회전, 이동 행렬순으로 결합해서 세계 변환 행렬 구함
+		mWorldTransform = Matrix4::CreateScale(mScale);
+		mWorldTransform *= Matrix4::CreateScale(mRotation);
+		mWorldTransform *= Matrix4::CreateScale(
+			Vector3(mPosition.x, mPosition.y, 0.0f));
+	}
+
+	// 컴포넌트에 세계 변환이 갱신됐다고 통지
+	for (auto comp : mComponents)
+	{
+		comp->OnUpdateWorldTransform();
+	}
+}
+
 
 // 특정 액터에 특화된 업데이트 코드 (오버라이딩 가능)
 void Actor::UpdateActor(float deltaTime) {

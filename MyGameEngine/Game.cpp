@@ -3,17 +3,21 @@
 #include "SpriteComponent.h"
 #include "BGSpriteComponent.h"
 #include "TileMapComponent.h"
+#include "AIComponent.h"
+#include "AIState.h"
+#include "Shader.h"
+#include "VertexArray.h"
+#include <GL/glew.h>
 
 // 특정 게임
 #include "Ship.h"
 #include "Asteroid.h"
 
 #include <algorithm>
-#include <SDL_image.h>
+#include "SDL/SDL_image.h"
 
 Game::Game()
 	:mWindow(nullptr)
-	, mRenderer(nullptr)
 	, mIsRunning(true)
 	, mUpdatingActors(false)
 	, mTicksCount(0)
@@ -23,11 +27,27 @@ Game::Game()
 bool Game::Initialize() {
 	int sdlResult = 0;
 
-	sdlResult = SDL_Init(SDL_INIT_VIDEO);
+	sdlResult = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO);
 	if (sdlResult != 0) {
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
+
+	// Set OpenGL attributes
+	// 코어 OpenGL 프로파일 사용
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+	// 3.3 버전으로 지정
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	// RGBA 채널마다 8비트 크기인 색상 버퍼 요청
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+	// 더블 버퍼링 활성화
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	// OpenGL이 하드웨어 가속을 사용하도록 강제 (GPU 에서 수행될 것임을 뜻함)
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
 
 	mWindow = SDL_CreateWindow(
 		"MyGameEngine",	// 윈도우 제목
@@ -35,7 +55,7 @@ bool Game::Initialize() {
 		100,	// 윈도우의 우측 상단 y좌표
 		1024,	// 윈도우 너비
 		768,	// 윈도우 높이
-		0		// 플래그 (0은 어떠한 플래그도 설정되지 않음을 의미)
+		SDL_WINDOW_OPENGL		// 플래그 (0은 어떠한 플래그도 설정되지 않음을 의미)
 	);
 	if (!mWindow)
 	{
@@ -43,18 +63,28 @@ bool Game::Initialize() {
 		return false;
 	}
 
-	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!mRenderer)
-	{
-		SDL_Log("Failed to create renderer: %s", SDL_GetError());
-		return false;
-	}
+	mContext = SDL_GL_CreateContext(mWindow);
 
-	if (IMG_Init(IMG_INIT_PNG) == 0)
+	// GLEW 초기화
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
 	{
-		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
+		SDL_Log("Failed to initialize GLEW.");
 		return false;
 	}
+	// 일부 플랫폼에서 GLEW은 에러 코드를 내보낸다.
+	// 그러므로 에러값을 제거하자
+	glGetError();
+
+	// Make sure we can create/compile shaders
+	if (!LoadShaders())
+	{
+		SDL_Log("Failed to load shaders.");
+		return false;
+	}
+	
+	// Create quad for drawing sprites
+	CreateSpriteVerts();
 
 	LoadData();
 
@@ -75,8 +105,10 @@ void Game::RunLoop() {
 // 게임 종료
 void Game::Shutdown() {
 	UnloadData();
-	IMG_Quit();
-	SDL_DestroyRenderer(mRenderer);
+	delete mSpriteVerts;
+	mSpriteShader->Unload();
+	delete mSpriteShader;
+	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }
@@ -94,13 +126,14 @@ void Game::ProcessInput() {
 
 	// 키보드의 상태 얻기
 	const Uint8* keyState = SDL_GetKeyboardState(NULL);
-	// 이스케이프 키를 눌렀다면 루프 종료
-	if (keyState[SDL_SCANCODE_ESCAPE]) {
+	if (keyState[SDL_SCANCODE_ESCAPE])
+	{
 		mIsRunning = false;
 	}
 
 	mUpdatingActors = true;
-	for (auto actor : mActors) {
+	for (auto actor : mActors)
+	{
 		actor->ProcessInput(keyState);
 	}
 	mUpdatingActors = false;
@@ -129,6 +162,7 @@ void Game::UpdateGame() {
 
 	// 대기 중인 액터를 mActors로 이동
 	for (auto pending : mPendingActors) {
+		pending->ComputeWorldTransform();
 		mActors.emplace_back(pending);
 	}
 	mPendingActors.clear();
@@ -148,25 +182,52 @@ void Game::UpdateGame() {
 }
 
 void Game::GenerateOutput() {
-	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
-	SDL_RenderClear(mRenderer);
+	// 색상을 회색으로 설정
+	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
+	// 색상 버퍼 초기화
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	// Draw all sprite components
+	// Enable alpha blending on the color buffer
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// 모든 스프라이트 컴포넌트를 그린다.
+	mSpriteShader->SetActive();
+	mSpriteVerts->SetActive();
 	for (auto sprite : mSprites) {
-		sprite->Draw(mRenderer);
+		sprite->Draw(mSpriteShader);
 	}
-	SDL_RenderPresent(mRenderer);
+
+	// Swap the buffers
+	SDL_GL_SwapWindow(mWindow);
+}
+
+bool Game::LoadShaders()
+{
+	mSpriteShader = new Shader();
+	if (!mSpriteShader->Load("Shaders/Transform.vert", "Shaders/Basic.frag"))
+	{
+		return false;
+	}
+	mSpriteShader->SetActive();
+
+	// Set the view-projection matrix
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(1024.0f, 768.0f);
+	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
+
+	return true;
 }
 
 void Game::LoadData() {
-	// 플레이어
+	// Create player's ship
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(512.0f, 384.0f));
 	mShip->SetRotation(Math::PiOver2);
 
-	// 운석
+	// Create asteroids
 	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++) {
+	for (int i = 0; i < numAsteroids; i++)
+	{
 		new Asteroid(this);
 	}
 }
@@ -182,6 +243,23 @@ void Game::UnloadData() {
 	mTextures.clear();
 }
 
+void Game::CreateSpriteVerts()
+{
+	float vertices[] = {
+		-0.5f,  0.5f, 0.f, 0.f, 0.f, // top left
+		 0.5f,  0.5f, 0.f, 1.f, 0.f, // top right
+		 0.5f, -0.5f, 0.f, 1.f, 1.f, // bottom right
+		-0.5f, -0.5f, 0.f, 0.f, 1.f  // bottom left
+	};
+
+	unsigned int indices[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	mSpriteVerts = new VertexArray(vertices, 4, indices, 6);
+}
+
 SDL_Texture* Game::GetTexture(const std::string& fileName) {
 	SDL_Texture* tex = nullptr;
 
@@ -190,20 +268,7 @@ SDL_Texture* Game::GetTexture(const std::string& fileName) {
 		tex = iter->second;
 	}
 	else {
-		SDL_Surface* surf = IMG_Load(fileName.c_str());
-		if (!surf) {
-			SDL_Log("Failed to load texture file %s", fileName.c_str());
-			return nullptr;
-		}
-
-		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
-		SDL_FreeSurface(surf);
-		if (!tex) {
-			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
-			return nullptr;
-		}
-
-		mTextures.emplace(fileName.c_str(), tex);
+		
 	}
 
 	return tex;
@@ -260,17 +325,43 @@ void Game::RemoveSprite(class SpriteComponent* sprite) {
 }
 
 // 특정 게임
+// ( 디펜스 )
+Enemy* Game::GetNearestEnemy(const Vector2& pos)
+{
+	
+	Enemy* best = nullptr;
+	/*
+	if (mEnemies.size() > 0)
+	{
+		best = mEnemies[0];
+		// Save the distance squared of first enemy, and test if others are closer
+		float bestDistSq = (pos - mEnemies[0]->GetPosition()).LengthSq();
+		for (size_t i = 1; i < mEnemies.size(); i++)
+		{
+			float newDistSq = (pos - mEnemies[i]->GetPosition()).LengthSq();
+			if (newDistSq < bestDistSq)
+			{
+				bestDistSq = newDistSq;
+				best = mEnemies[i];
+			}
+		}
+	}
+	*/
+	return best;
+}
 
-// 운석 추가
-void Game::AddAsteroid(Asteroid* ast) {
+// ( 아스트로이드 )
+void Game::AddAsteroid(Asteroid* ast)
+{
 	mAsteroids.emplace_back(ast);
 }
 
-// 운석 삭제
-void Game::RemoveAsteroid(Asteroid* ast) {
-	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
-
-	if (iter != mAsteroids.end()) {
+void Game::RemoveAsteroid(Asteroid* ast)
+{
+	auto iter = std::find(mAsteroids.begin(),
+		mAsteroids.end(), ast);
+	if (iter != mAsteroids.end())
+	{
 		mAsteroids.erase(iter);
 	}
 }

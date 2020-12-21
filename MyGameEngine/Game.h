@@ -1,8 +1,9 @@
 #pragma once
-#include <SDL.h>
+#include "SDL/SDL.h"
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include "Math.h"
 
 class Game {
 public:
@@ -24,6 +25,12 @@ public:
 	SDL_Texture* GetTexture(const std::string& fileName);
 
 	// 특정 게임
+	// ( 디펜스 )
+	class Grid* GetGrid() { return mGrid; }
+	std::vector<class Enemy*>& GetEnemies() { return mEnemies; }
+	class Enemy* GetNearestEnemy(const Vector2& pos);
+
+	// ( 아스트로이드 )
 	void AddAsteroid(class Asteroid* ast);
 	void RemoveAsteroid(class Asteroid* ast);
 	std::vector<class Asteroid*>& GetAsteroids() { return mAsteroids; }
@@ -35,16 +42,8 @@ private:
 	void GenerateOutput();
 	void LoadData();
 	void UnloadData();
-
-	// SDL이 생성한 윈도우
-	SDL_Window* mWindow;
-	SDL_Renderer* mRenderer;
-	Uint32 mTicksCount;
-
-	// 게임이 계속 실행돼야 하는지를 판단
-	bool mIsRunning;
-	// 현재 액터가 갱신중인지 판단
-	bool mUpdatingActors;
+	bool LoadShaders();
+	void CreateSpriteVerts();
 
 	// 활성화된 액터
 	std::vector<class Actor*> mActors;
@@ -56,7 +55,27 @@ private:
 	// Map of textures loaded
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
+	// 스프라이트 쉐이더
+	class Shader* mSpriteShader;
+	// Sprite vertex array
+	class VertexArray* mSpriteVerts;
+
+	// SDL이 생성한 윈도우
+	SDL_Window* mWindow;
+	Uint32 mTicksCount;
+	SDL_GLContext mContext;
+
+	// 게임이 계속 실행돼야 하는지를 판단
+	bool mIsRunning;
+	// 현재 액터가 갱신중인지 판단
+	bool mUpdatingActors;
+
 	// 특정 게임
-	class Ship* mShip; // 플레이어
-	std::vector<class Asteroid*> mAsteroids; // 운석
+	std::vector<class Enemy*> mEnemies;
+	class Grid* mGrid;
+	float mNextEnemy;
+
+	// ( 아스트로이드 )
+	class Ship* mShip; // Player's Ship
+	std::vector<class Asteroid*> mAsteroids;
 };

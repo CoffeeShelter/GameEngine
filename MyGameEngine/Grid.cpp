@@ -1,3 +1,11 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "Grid.h"
 #include "Tile.h"
 #include "Tower.h"
@@ -90,6 +98,7 @@ void Grid::ProcessClick(int x, int y)
 	}
 }
 
+// Implements A* pathfinding
 bool Grid::FindPath(Tile* start, Tile* goal)
 {
 	for (size_t i = 0; i < NumRows; i++)
@@ -104,7 +113,7 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 
 	std::vector<Tile*> openSet;
 
-	// Set current nod to start, and add to closed set
+	// Set current node to start, and add to closed set
 	Tile* current = start;
 	current->mInClosedSet = true;
 
@@ -119,7 +128,7 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 			}
 
 			// Only check nodes that aren't in the closed set
-			if(!neighbor->mInClosedSet)
+			if (!neighbor->mInClosedSet)
 			{
 				if (!neighbor->mInOpenSet)
 				{
@@ -141,14 +150,14 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 						// Adopt this node
 						neighbor->mParent = current;
 						neighbor->g = newG;
-						// f(x) changes becuase g(x) changes
+						// f(x) changes because g(x) changes
 						neighbor->f = neighbor->g + neighbor->h;
 					}
 				}
 			}
 		}
 
-		// if open set is empty, all possible paths are exhausted
+		// If open set is empty, all possible paths are exhausted
 		if (openSet.empty())
 		{
 			break;
@@ -156,16 +165,14 @@ bool Grid::FindPath(Tile* start, Tile* goal)
 
 		// Find lowest cost node in open set
 		auto iter = std::min_element(openSet.begin(), openSet.end(),
-									[](Tile* a, Tile* b) {
-										return a->f < b->f;
-									});
-
+			[](Tile* a, Tile* b) {
+			return a->f < b->f;
+		});
 		// Set to current and move from open to closed
 		current = *iter;
 		openSet.erase(iter);
 		current->mInOpenSet = false;
 		current->mInClosedSet = true;
-
 	} while (current != goal);
 
 	// Did we find a path?
@@ -179,11 +186,18 @@ void Grid::UpdatePathTiles(class Tile* start)
 	{
 		for (size_t j = 0; j < NumCols; j++)
 		{
-			if (!(i == 3 && j == 0) && (i == 3 && j == 15))
+			if (!(i == 3 && j == 0) && !(i == 3 && j == 15))
 			{
 				mTiles[i][j]->SetTileState(Tile::EDefault);
 			}
 		}
+	}
+
+	Tile* t = start->mParent;
+	while (t != GetEndTile())
+	{
+		t->SetTileState(Tile::EPath);
+		t = t->mParent;
 	}
 }
 
@@ -203,7 +217,6 @@ void Grid::BuildTower()
 			mSelectedTile->mBlocked = false;
 			FindPath(GetEndTile(), GetStartTile());
 		}
-
 		UpdatePathTiles(GetStartTile());
 	}
 }

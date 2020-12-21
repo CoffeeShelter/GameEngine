@@ -10,7 +10,7 @@ public:
 	BGSpriteComponent(class Actor* owner, int drawOrder = 10);
 	// 부모로부터 오버라이딩한 Update/draw 함수
 	void Update(float deltaTime) override;
-	void Draw(SDL_Renderer* renderer) override;
+	void Draw(Shader* shader) override;
 	// 배경에 사용되는 텍스처 설정
 	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
 	
