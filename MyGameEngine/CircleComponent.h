@@ -8,7 +8,7 @@ public:
 	void SetRadius(float radius) { mRadius = radius; }
 	float GetRadius() const;
 
-	const Vector2& GetCenter() const;
+	const Vector3& GetCenter() const;
 private:
 	// ¹İÁö¸§
 	float mRadius;

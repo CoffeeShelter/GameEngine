@@ -1,32 +1,32 @@
 #include "MoveComponent.h"
-#include "Math.h"
 #include "Actor.h"
 
-MoveComponent::MoveComponent(Actor* owner, int updateOrder)
-:Component(owner, updateOrder)
-,mAngularSpeed(0.0f)
-,mForwardSpeed(0.0f)
-{}
+MoveComponent::MoveComponent(class Actor* owner, int updateOrder)
+	:Component(owner, updateOrder)
+	, mAngularSpeed(0.0f)
+	, mForwardSpeed(0.0f)
+{
 
-void MoveComponent::Update(float deltaTime) {
+}
 
-	if (!Math::NearZero(mAngularSpeed)) {
-		float  rot = mOwner->GetRotation();
-		rot += mAngularSpeed * deltaTime;
+void MoveComponent::Update(float deltaTime)
+{
+	if (!Math::NearZero(mAngularSpeed))
+	{
+		Quaternion rot = mOwner->GetRotation();
+		float angle = mAngularSpeed * deltaTime;
+		// 회전 증가분을 위한 쿼터니언을 생성
+		// (상향축을 기준으로 회전)
+		Quaternion inc(Vector3::UnitZ, angle);
+		// 이전 쿼터니언과 새 쿼터니언을 연결한다
+		rot = Quaternion::Concatenate(rot, inc);
 		mOwner->SetRotation(rot);
 	}
 
-	if (!Math::NearZero(mForwardSpeed)) {
-		Vector2 pos = mOwner->GetPosition();
+	if (!Math::NearZero(mForwardSpeed))
+	{
+		Vector3 pos = mOwner->GetPosition();
 		pos += mOwner->GetForward() * mForwardSpeed * deltaTime;
-
-		// 화면 밖을 벗어났을 경우 반대쪽으로 순간이동 시킨다.
-		if (pos.x < 0.0f) { pos.x = 1022.0f; }
-		else if (pos.x > 1024.0f) { pos.x = 2.0f; }
-
-		if (pos.y < 0.0f) { pos.y = 766.0f; }
-		else if (pos.y > 768.0f) { pos.y = 2.0f; }
-
 		mOwner->SetPosition(pos);
 	}
 }

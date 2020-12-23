@@ -28,17 +28,17 @@ public:
 	virtual void ActorInput(const uint8_t* keyState);
 
 	// Getter/Setter
-	const Vector2& GetPosition() const { return mPosition; }
-	void SetPosition(const Vector2& pos) { mPosition = pos; }
+	const Vector3& GetPosition() const { return mPosition; }
+	void SetPosition(const Vector3& pos) { mPosition = pos; mRecomputeWorldTransform = true; }
 	float GetScale() const { return mScale; }
-	void SetScale(float scale) { mScale = scale; }
-	float GetRotation() const { return mRotation; }
-	void SetRotation(float rotation) { mRotation = rotation; }
+	void SetScale(float scale) { mScale = scale; mRecomputeWorldTransform = true; }
+	Quaternion GetRotation() const { return mRotation; }
+	void SetRotation(Quaternion rotation) { mRotation = rotation; mRecomputeWorldTransform = true; }
 
 	void ComputeWorldTransform();
 	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
 
-	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
+	Vector3 GetForward() const { return Vector3::Transform(Vector3::UnitX,mRotation); }
 
 	State GetState() const { return mState; }
 	void SetState(State state) { mState = state; }
@@ -53,9 +53,9 @@ private:
 	State mState;
 	// 변환
 	Matrix4 mWorldTransform;
-	Vector2 mPosition;	// 액터의 중심점
+	Vector3 mPosition;	// 액터의 중심점
 	float mScale;		// 액터의 배율 (100% 의 경우 1.0f)
-	float mRotation;	// 회전 각도 (라디안)
+	Quaternion mRotation;	// 회전 각도 (라디안)
 	bool mRecomputeWorldTransform;
 
 	// 이 액터가 보유한 컴포넌트들

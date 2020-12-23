@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Renderer.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:Component(owner)
@@ -11,11 +12,11 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	, mTexWidth(0)
 	, mTexHeight(0)
 {
-	mOwner->GetGame()->AddSprite(this);
+	mOwner->GetGame()->GetRenderer()->AddSprite(this);
 }
 
 SpriteComponent::~SpriteComponent() {
-	mOwner->GetGame()->RemoveSprite(this);
+	mOwner->GetGame()->GetRenderer()->RemoveSprite(this);
 }
 
 // ±×¸®±â

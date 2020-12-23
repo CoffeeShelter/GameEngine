@@ -88,7 +88,9 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\external\GLEW\include;..\external\SOIL\include;..\external\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\external\GLEW\include;..\external\rapidjson\include;..\external\SOIL\include;..\external\SDL\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <MinimalRebuild>false</MinimalRebuild>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -146,64 +148,53 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Actor.cpp" />
-    <ClCompile Include="AIComponent.cpp" />
     <ClCompile Include="AnimSpriteComponent.cpp" />
-    <ClCompile Include="Asteroid.cpp" />
     <ClCompile Include="BGSpriteComponent.cpp" />
-    <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="CameraActor.cpp" />
     <ClCompile Include="CircleComponent.cpp" />
     <ClCompile Include="Component.cpp" />
-    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
-    <ClCompile Include="Grid.cpp" />
     <ClCompile Include="InputComponent.cpp" />
-    <ClCompile Include="Laser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Math.cpp" />
+    <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MeshComponent.cpp" />
     <ClCompile Include="MoveComponent.cpp" />
-    <ClCompile Include="NavComponent.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Search.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="Ship.cpp" />
     <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="TileMapComponent.cpp" />
-    <ClCompile Include="Tower.cpp" />
     <ClCompile Include="VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Actor.h" />
-    <ClInclude Include="AIComponent.h" />
     <ClInclude Include="AIState.h" />
     <ClInclude Include="AnimSpriteComponent.h" />
-    <ClInclude Include="Asteroid.h" />
     <ClInclude Include="BGSpriteComponent.h" />
-    <ClInclude Include="Bullet.h" />
+    <ClInclude Include="CameraActor.h" />
     <ClInclude Include="CircleComponent.h" />
     <ClInclude Include="Component.h" />
-    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Game.h" />
-    <ClInclude Include="Grid.h" />
     <ClInclude Include="InputComponent.h" />
-    <ClInclude Include="Laser.h" />
     <ClInclude Include="Math.h" />
+    <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MeshComponent.h" />
     <ClInclude Include="MoveComponent.h" />
-    <ClInclude Include="NavComponent.h" />
+    <ClInclude Include="PlaneActor.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="Ship.h" />
     <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="Texture.h" />
-    <ClInclude Include="Tile.h" />
-    <ClInclude Include="TileMapComponent.h" />
-    <ClInclude Include="Tower.h" />
     <ClInclude Include="VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\Basic.frag" />
     <None Include="Shaders\Basic.vert" />
+    <None Include="Shaders\Sprite.frag" />
+    <None Include="Shaders\Sprite.vert" />
     <None Include="Shaders\Transform.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

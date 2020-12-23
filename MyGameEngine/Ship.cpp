@@ -10,7 +10,6 @@
 Ship::Ship(Game* game)
 	:Actor(game)
 	, mLaserCooldown(0.0f)
-	, mCircle(nullptr)
 {
 	// 스프라이트 컴포넌트 생성
 	SpriteComponent* sc = new SpriteComponent(this, 150);
@@ -24,27 +23,11 @@ Ship::Ship(Game* game)
 	ic->SetCounterClockwiseKey(SDL_SCANCODE_D);
 	ic->SetMaxForwardSpeed(300.0f);
 	ic->SetMaxAngularSpeed(Math::TwoPi);
-
-	// CircleComponent 생성
-	// collision
-	mCircle = new CircleComponent(this);
-	mCircle->SetRadius(40.0f);
 }
 
 void Ship::UpdateActor(float deltaTime) {
 	// 레이저 쿨타임
 	mLaserCooldown -= deltaTime;
-
-	for (auto ast : GetGame()->GetAsteroids())
-	{
-		if (Intersect(*mCircle, *(ast->GetCircle())))
-		{
-			SetPosition(Vector2(512.0f, 384.0f));
-			SetRotation(0.0f);
-		}
-	}
-
-
 }
 
 void Ship::ActorInput(const uint8_t* keyState) {

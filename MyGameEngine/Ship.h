@@ -10,6 +10,4 @@ public:
 private:
 	// 레이저 쿨 타임
 	float mLaserCooldown;
-
-	class CircleComponent* mCircle;
 };
