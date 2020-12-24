@@ -13,7 +13,12 @@ public:
 	// 이 쉐이더를 활성화된 쉐이더 프로그램으로 설정
 	void SetActive();
 
+	// Sets a Matrix uniform
 	void SetMatrixUniform(const char* name, const Matrix4& matrix);
+	// Sets a Vector3 uniform
+	void SetVectorUniform(const char* name, const Vector3& vector);
+	// Sets a float uniform
+	void SetFloatUniform(const char* name, float value);
 private:
 	// 지정된 쉐이더를 컴파일
 	bool CompileShader(const std::string& fileName, GLenum shaderType, GLuint& outShader);

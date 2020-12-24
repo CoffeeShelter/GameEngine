@@ -47,16 +47,16 @@ uniform DirectionalLight uDirLight;
 
 void main()
 {
-	// Surface normal
+	// 표면 법선
 	vec3 N = normalize(fragNormal);
-	// Vector from surface to light
+	// 표면에서 광원으로의 벡터
 	vec3 L = normalize(-uDirLight.mDirection);
-	// Vector from surface to camera
+	// 표면에서 카메라로 향하는 벡터
 	vec3 V = normalize(uCameraPos - fragWorldPos);
-	// Reflection of -L about N
+	// N에 대한 -L의 반사
 	vec3 R = normalize(reflect(-L, N));
 
-	// Compute phong reflection
+	// 퐁 반사 계산
 	vec3 Phong = uAmbientLight;
 	float NdotL = dot(N, L);
 	if (NdotL > 0)
@@ -66,6 +66,6 @@ void main()
 		Phong += Diffuse + Specular;
 	}
 
-	// Final color is texture color times phong light (alpha = 1)
+	// 최종색은 텍스처 색상 곱하기 퐁 광원 (alpha = 1)
     outColor = texture(uTexture, fragTexCoord) * vec4(Phong, 1.0f);
 }

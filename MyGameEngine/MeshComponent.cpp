@@ -1,17 +1,24 @@
+// ----------------------------------------------------------------
+// From Game Programming in C++ by Sanjay Madhav
+// Copyright (C) 2017 Sanjay Madhav. All rights reserved.
+// 
+// Released under the BSD License
+// See LICENSE in root directory for full details.
+// ----------------------------------------------------------------
+
 #include "MeshComponent.h"
-#include "Actor.h"
 #include "Shader.h"
-#include "Actor.h"
 #include "Mesh.h"
+#include "Actor.h"
+#include "Game.h"
 #include "Renderer.h"
 #include "Texture.h"
 #include "VertexArray.h"
-#include "Game.h"
 
 MeshComponent::MeshComponent(Actor* owner)
 	:Component(owner)
-	,mMesh(nullptr)
-	,mTextureIndex(0)
+	, mMesh(nullptr)
+	, mTextureIndex(0)
 {
 	mOwner->GetGame()->GetRenderer()->AddMeshComp(this);
 }
@@ -25,15 +32,21 @@ void MeshComponent::Draw(Shader* shader)
 {
 	if (mMesh)
 	{
-		// 세계 변환 설정
-		shader->SetMatrixUniform("uWorldTransform", mOwner->GetWorldTransform());
-		// 활성화될 텍스처 설정
+		// Set the world transform
+		shader->SetMatrixUniform("uWorldTransform",
+			mOwner->GetWorldTransform());
+		// Set specular power
+		shader->SetFloatUniform("uSpecPower", mMesh->GetSpecPower());
+		// Set the active texture
 		Texture* t = mMesh->GetTexture(mTextureIndex);
-		if (t) { t->SetActive(); }
-		// 활성화될 메시의 버텍스 배열 설정
+		if (t)
+		{
+			t->SetActive();
+		}
+		// Set the mesh's vertex array as active
 		VertexArray* va = mMesh->GetVertexArray();
 		va->SetActive();
-		// 메시를 그린다
+		// Draw
 		glDrawElements(GL_TRIANGLES, va->GetNumIndices(), GL_UNSIGNED_INT, nullptr);
 	}
 }

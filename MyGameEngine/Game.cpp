@@ -193,19 +193,19 @@ void Game::LoadData()
 		a->SetRotation(q);
 	}
 
+	*/
+
 	// Setup lights
 	mRenderer->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
 	DirectionalLight& dir = mRenderer->GetDirectionalLight();
 	dir.mDirection = Vector3(0.0f, -0.707f, -0.707f);
-	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
-	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
+	dir.mDiffuseColor = Vector3(0.0f, 1.0f, 0.0f);
+	dir.mSpecColor = Vector3(0.5f, 1.0f, 0.5f);
 
-	*/
+	
 
 	// Camera actor
 	mCameraActor = new CameraActor(this);
-
-	/*
 
 	// UI elements
 	a = new Actor(this);
@@ -218,8 +218,6 @@ void Game::LoadData()
 	a->SetScale(0.75f);
 	sc = new SpriteComponent(a);
 	sc->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
-
-	*/
 
 }
 

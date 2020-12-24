@@ -283,7 +283,6 @@ void Renderer::CreateSpriteVerts()
 
 void Renderer::SetLightUniforms(Shader* shader)
 {
-	/*
 	// Camera position is from inverted view
 	Matrix4 invView = mView;
 	invView.Invert();
@@ -297,5 +296,4 @@ void Renderer::SetLightUniforms(Shader* shader)
 		mDirLight.mDiffuseColor);
 	shader->SetVectorUniform("uDirLight.mSpecColor",
 		mDirLight.mSpecColor);
-	*/
 }

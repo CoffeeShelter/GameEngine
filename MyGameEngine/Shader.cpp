@@ -125,3 +125,17 @@ void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
 		matrix.GetAsFloatPtr()	// 행렬 데이터에 대한 포인터
 	);
 }
+
+void Shader::SetVectorUniform(const char* name, const Vector3& vector)
+{
+	GLuint loc = glGetUniformLocation(mShaderProgram, name);
+	// Send the vector data
+	glUniform3fv(loc, 1, vector.GetAsFloatPtr());
+}
+
+void Shader::SetFloatUniform(const char* name, float value)
+{
+	GLuint loc = glGetUniformLocation(mShaderProgram, name);
+	// Send the float data
+	glUniform1f(loc, value);
+}
